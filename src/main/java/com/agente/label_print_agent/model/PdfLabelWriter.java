@@ -15,7 +15,6 @@ import java.io.ByteArrayOutputStream;
 public class PdfLabelWriter {
 
     public byte[] toPdfBytes(BufferedImage img, int dpi) {
-        // Converte pixels -> pontos (PDF usa 72 pontos por polegada)
         float widthPt = (float) (img.getWidth() * 72.0 / dpi);
         float heightPt = (float) (img.getHeight() * 72.0 / dpi);
 

@@ -21,7 +21,7 @@ import java.util.Arrays;
 public class PrintServiceAgent {
 
     private final LabelRenderer renderer;
-    private final PdfLabelWriter pdfWriter; // mantém se quiser gerar/salvar PDF depois (não usado na impressão aqui)
+    private final PdfLabelWriter pdfWriter;
 
     public PrintServiceAgent(LabelRenderer renderer, PdfLabelWriter pdfWriter) {
         this.renderer = renderer;
@@ -45,10 +45,6 @@ public class PrintServiceAgent {
                 );
     }
 
-    /**
-     * Imprime via Java2D (PrinterJob), respeitando o tamanho/mídia configurados no driver do Windows.
-     * Isso evita o erro: "Paper's imageable width is too small."
-     */
     public void printLabel(PrintLabelRequest req) {
         PrintService ps = findPrinterByName(req.printerName);
 
@@ -58,13 +54,7 @@ public class PrintServiceAgent {
             PrinterJob job = PrinterJob.getPrinterJob();
             job.setPrintService(ps);
 
-            // Deixa o driver fornecer o PageFormat correto (mídia DK-11201 etc.)
             PageFormat pf = job.defaultPage();
-
-            // Se você precisar inverter orientação, use LANDSCAPE aqui (opcional)
-            // Normalmente para 90x29, PORTRAIT já funciona se o driver estiver com a mídia correta.
-            // Se estiver saindo girado, você alterna:
-            // pf.setOrientation(req.landscape ? PageFormat.LANDSCAPE : PageFormat.PORTRAIT);
 
             Printable printable = (graphics, pageFormat, pageIndex) -> {
                 if (pageIndex > 0) return Printable.NO_SUCH_PAGE;
@@ -80,12 +70,10 @@ public class PrintServiceAgent {
                 double iw = pageFormat.getImageableWidth();
                 double ih = pageFormat.getImageableHeight();
 
-                // Segurança: evita imageable inválido
                 if (iw <= 1 || ih <= 1) {
                     throw new PrinterException("Área imprimível inválida (iw/ih): " + iw + " x " + ih);
                 }
 
-                // Escala para caber na área imprimível, mantendo proporção
                 double sx = iw / img.getWidth();
                 double sy = ih / img.getHeight();
                 double scale = Math.min(sx, sy);
@@ -106,7 +94,6 @@ public class PrintServiceAgent {
             int copies = Math.max(1, req.copies);
             job.setCopies(copies);
 
-            // Dispara a impressão (sem UI)
             job.print();
 
         } catch (Exception e) {

@@ -24,11 +24,6 @@ public class LabelRenderer {
         int w = mmToPx(req.widthMm, req.dpi);
         int h = mmToPx(req.heightMm, req.dpi);
 
-        // ✅ Para ficar como o quadrado vermelho:
-        // imagem "deitada" (90x29) e texto horizontal.
-        // Se você estiver mandando landscape=true e quer que ele permaneça deitado,
-        // NÃO rotaciona nada. (Opcionalmente, você pode ignorar landscape aqui.)
-        // Se quiser que landscape=true force deitar, use o swap abaixo:
         if (req.landscape && h > w) {
             int tmp = w; w = h; h = tmp;
         }
@@ -44,15 +39,13 @@ public class LabelRenderer {
 
         String text = (req.text == null ? "" : req.text).toUpperCase(Locale.ROOT);
 
-        // padding para não cortar
         int padX = (int) Math.round(w * 0.06);
         int padY = (int) Math.round(h * 0.18);
 
         int maxW = w - (2 * padX);
         int maxH = h - (2 * padY);
 
-        // auto-fit fonte
-        int fontSize = Math.max(10, maxH); // começa pela altura
+        int fontSize = Math.max(10, maxH);
         Font font;
         FontMetrics fm;
 

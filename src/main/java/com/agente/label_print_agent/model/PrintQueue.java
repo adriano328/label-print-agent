@@ -10,7 +10,6 @@ public class PrintQueue {
 
     private final BlockingQueue<PrintJobItem> queue = new LinkedBlockingQueue<>(500);
 
-    // status básico (opcional, mas muito útil pro Angular)
     private final ConcurrentMap<String, String> statusById = new ConcurrentHashMap<>();
 
     public String enqueue(PrintJobItem item) {

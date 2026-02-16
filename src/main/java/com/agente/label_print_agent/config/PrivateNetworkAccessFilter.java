@@ -19,10 +19,8 @@ public class PrivateNetworkAccessFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // Necessário para navegação segura: contexto público (https) -> rede privada (127.0.0.1)
         response.setHeader("Access-Control-Allow-Private-Network", "true");
 
-        // Preflight
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
             return;

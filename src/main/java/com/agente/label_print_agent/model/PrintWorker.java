@@ -21,7 +21,6 @@ public class PrintWorker {
 
             while (true) {
                 try {
-                    // ⬇⬇⬇ AQUI É O TRECHO QUE VOCÊ PERGUNTOU ⬇⬇⬇
                     PrintJobItem job = printQueue.take();
                     printQueue.setStatus(job.id, "PRINTING");
 
@@ -30,10 +29,7 @@ public class PrintWorker {
                         printQueue.setStatus(job.id, "DONE");
                     } catch (Exception ex) {
                         printQueue.setStatus(job.id, "FAILED");
-                        // opcional: logar erro
-                        // ex.printStackTrace();
                     }
-                    // ⬆⬆⬆ FIM DO TRECHO ⬆⬆⬆
 
                 } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
